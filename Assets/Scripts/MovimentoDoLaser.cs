@@ -15,5 +15,9 @@ public class MovimentoDoLaser : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.right * velocLaser * Time.deltaTime);
+        if(transform.position.x > 12.2f)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

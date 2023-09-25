@@ -4,29 +4,40 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float veloc;
-    public GameObject pfLaser;
+    [SerializeField]
+    private float _veloc;
+    [SerializeField]
+    private GameObject _pfLaser;
+    [SerializeField]
+    public float tempoDeDisparo = 0.3f;
+    public float podeDisparar = 0.0f;
+    public bool possoDarDisparoTriplo = false;
+    [SerializeField]
+    private GameObject _disparoTriploPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Método Star de"+this.name);
-        veloc = 3.0f;
-        transform.position = new Vector3(-6.0f,-3.0f,0);
+        _veloc = 3.0f;
+        transform.position = new Vector3(-6f,0,0);
     }
 
     // Update is called once per frame
     void Update()
     {
         this.Movimento();
-
-        if ( Input.GetKeyDown(KeyCode.Space)){
-            Instantiate(pfLaser,transform.position + new Vector3(0,1f,0),Quaternion.identity);
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)){
+            if(Time.time > podeDisparar)
+            {
+                Disparo();
+            }
         }
     }
     private void Movimento()
     {
         float entradaHorizontal = Input.GetAxis("Horizontal");
-        transform.Translate(Vector3.up * entradaHorizontal * Time.deltaTime * veloc);
+        transform.Translate(Vector3.up * entradaHorizontal * Time.deltaTime * _veloc);
         if(transform.position.y > 2f){
             transform.position = new Vector3(transform.position.x,2f,0);
         }else if (transform.position.y < -5.5){
@@ -34,11 +45,38 @@ public class Player : MonoBehaviour
         }
 
         float entradaVertical = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.up * entradaVertical * Time.deltaTime * veloc);
+        transform.Translate(Vector3.up * entradaVertical * Time.deltaTime * _veloc);
         if(transform.position.x > 9.68f){
             transform.position = new Vector3(-9.68f,transform.position.y,0);
         }else if (transform.position.x < -9.68f){
             transform.position = new Vector3(9.68f,transform.position.y,0);
         }
+    }
+
+
+    private void Disparo()
+    {
+    if(Time.time > podeDisparar)
+        {
+            if(possoDarDisparoTriplo == true)
+        {
+            Instantiate(_disparoTriploPrefab,transform.position,Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_pfLaser, transform.position + new Vector3(0,1.1f,0), Quaternion.identity);
+        }
+        podeDisparar = Time.time + tempoDeDisparo;
+        }
+    }
+    public void LigarPUDisparoTriplo()
+    {
+        possoDarDisparoTriplo = true;
+        StartCoroutine(DisparoTriploRotina());
+    }
+    public IEnumerator DisparoTriploRotina()
+    {
+        yield return new WaitForSeconds(7.0f);
+        possoDarDisparoTriplo = false;
     }
 }
