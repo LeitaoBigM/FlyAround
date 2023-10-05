@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public bool possoDarDisparoTriplo = false;
     [SerializeField]
     private GameObject _disparoTriploPrefab;
+    public int vidas = 3;
 
     // Start is called before the first frame update
     void Start()
@@ -78,5 +79,13 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(7.0f);
         possoDarDisparoTriplo = false;
+    }
+    public void DanoAoPlayer()
+    {
+        vidas--;
+        if(vidas < 1)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
